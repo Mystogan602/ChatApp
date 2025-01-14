@@ -1,0 +1,79 @@
+.login {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  background: url(/background.png) no-repeat;
+  background-size: cover;
+
+  .login_logo_big {
+    width: max(200px, 20vw);
+  }
+
+  .login_form {
+    background-color: #fff;
+    padding: 20px 30px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: max(250px, 25vw);
+    h2 {
+      font-weight: 500;
+    }
+
+    .form_input {
+      padding: 8px 10px;
+      border-radius: 4px;
+      border: 1px solid #c9c9c9;
+      outline-color: #077eff;
+      &--error {
+        border-color: red;
+      }
+    }
+
+    .error-message {
+      color: red;
+      font-size: 0.8rem;
+    }
+
+    button {
+      padding: 8px 10px;
+      border-radius: 4px;
+      border: none;
+      background-color: #077eff;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      &:hover {
+        background-color: #0566d4;
+      }
+    }
+
+    .login_term{
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 12px;
+        color: #808080;
+    }
+
+    .login_forgot{
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        justify-content: center;
+        align-items: center;
+        .login_toggle{
+            font-size: 13px;
+            color: #5c5c5c;
+            span{
+                font-weight: 500;
+                color: #077eff;
+                cursor: pointer;
+            }
+        }
+    }
+  }
+}
