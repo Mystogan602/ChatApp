@@ -16,7 +16,28 @@ import menu_icon from './menu_icon.png'
 import arrow_icon from './arrow_icon.png'
 import green_dot from './green_dot.png'
 
-const assets = {
+interface Assets {
+    avatar_icon: string;
+    gallery_icon: string;
+    help_icon: string;
+    logo_big: string;
+    logo_icon: string;
+    logo: string;
+    pic1: string;
+    pic2: string;
+    pic3: string;
+    pic4: string;
+    profile_img: string;
+    search_icon: string;
+    send_button: string;
+    add_icon: string;
+    menu_icon: string;
+    arrow_icon: string;
+    green_dot: string;
+}
+
+
+const assets: Assets = {
     avatar_icon,
     gallery_icon,
     help_icon,
