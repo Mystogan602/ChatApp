@@ -1,0 +1,108 @@
+.cb {
+  background: #f1f5ff;
+  border-radius: 10px;
+  position: relative;
+  height: 75vh;
+  .cb-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    border-bottom: 1px solid #c6c6c6;
+    img {
+      width: 25px;
+      aspect-ratio: 1/1;
+      border-radius: 50%;
+      &:first-child {
+        width: 38px;
+        aspect-ratio: 1/1;
+      }
+    }
+    p {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      gap: 5px;
+      font-size: 20px;
+      font-weight: 500;
+      color: #393939;
+    }
+  }
+  .cb-chat {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    gap: 12px;
+    background: #fff;
+    border-radius: 10px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    img {
+      width: 30px;
+      aspect-ratio: 1/1;
+      cursor: pointer;
+    }
+    label {
+      display: flex;
+      img {
+        width: 22px;
+      }
+    }
+    input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+    }
+  }
+  .chat-msg {
+    height: calc(100% - 100px);
+    padding-bottom: 10px;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column-reverse;
+    .s-msg,
+    .r-msg {
+      div {
+        text-align: center;
+        font-size: 9px;
+        img {
+          width: 27px;
+          aspect-ratio: 1/1;
+          border-radius: 50%;
+        }
+      }
+      display: flex;
+      align-items: end;
+      justify-content: end;
+      gap: 5px;
+      padding: 0 15px;
+      .msg-img {
+        max-width: 230px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+      }
+    }
+    .r-msg {
+      flex-direction: row-reverse;
+      justify-content: start;
+      .msg {
+        border-radius: 8px 8px 8px 0;
+      }
+    }
+    .msg {
+      color: #fff;
+      background: #007eff;
+      padding: 8px;
+      border-radius: 8px 8px 0;
+      max-width: 200px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      font-size: 13px;
+      font-weight: 300;
+      margin-bottom: 30px;
+    }
+  }
+}
