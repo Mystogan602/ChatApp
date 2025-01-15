@@ -1,9 +1,16 @@
 import './Chat.scss'
+import LeftSidebar from '../../components/LeftSidebar/LeftSidebar'
+import ChatBox from '../../components/ChatBox/ChatBox'
+import RightSidebar from '../../components/RightSidebar/RightSidebar'
 
 const Chat = () => {
   return (
-    <div>
-      <h1>Chat</h1>
+    <div className="chat">
+      <div className="chat-container">
+        <LeftSidebar />
+        <ChatBox />
+        <RightSidebar />
+      </div>
     </div>
   )
 }
