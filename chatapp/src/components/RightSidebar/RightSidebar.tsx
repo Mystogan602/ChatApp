@@ -1,5 +1,7 @@
 import assets from '../../assets/assets'
 import './RightSidebar.scss'
+import { signOutUser } from '../../config/firebase'
+
 
 const RightSidebar = () => {
   return (
@@ -18,7 +20,7 @@ const RightSidebar = () => {
             <img src={assets.pic3} alt="" />
         </div>
       </div>
-      <button>Logout</button>
+      <button onClick={() => signOutUser()}>Logout</button>
     </div>
   )
 }

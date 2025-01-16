@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Snackbar, Alert, CircularProgress } from '@mui/material'
 import assets from '../../assets/assets'
 import './ProfileUpdate.scss'
 import { useForm } from 'react-hook-form'
@@ -17,9 +18,35 @@ const ProfileUpdate = () => {
   } = useForm<FormValues>()
 
   const [avatar, setAvatar] = useState<File | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success' as 'success' | 'error'
+  })
 
-  const onSubmit = (data: FormValues) => {
-    console.log(data)
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false })
+  }
+
+  const onSubmit = async (data: FormValues) => {
+    try {
+      setLoading(true)
+      // Xử lý logic update
+      setSnackbar({
+        open: true,
+        message: 'Profile updated successfully!',
+        severity: 'success'
+      })
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: 'Failed to update profile',
+        severity: 'error'
+      })
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -56,10 +83,25 @@ const ProfileUpdate = () => {
           />
           {errors.bio && <span className="error">{errors.bio.message}</span>}
 
-          <button type='submit'>Update</button>
+          <button type='submit' disabled={loading}>
+            {loading ? <CircularProgress size={24} /> : 'Update'}
+          </button>
         </form>
         <img className='profile-pic' src={avatar ? URL.createObjectURL(avatar) : assets.avatar_icon} alt="logo" />
       </div>
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert
+          severity={snackbar.severity}
+          onClose={handleCloseSnackbar}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </div>
   )
 }

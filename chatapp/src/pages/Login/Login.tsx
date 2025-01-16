@@ -3,7 +3,9 @@ import assets from '../../assets/assets'
 import { useForm } from 'react-hook-form'
 import { useSpring, animated } from '@react-spring/web'
 import { useState } from 'react'
-
+import { signIn, signUp } from '../../config/firebase'
+import LoadingModal from '../../components/Modals/LoadingModal'
+import MessageModal from '../../components/Modals/MessageModal'
 
 interface LoginFormInputs {
   username: string
@@ -14,6 +16,20 @@ interface LoginFormInputs {
 
 const Login = () => {
   const [currentPage, setCurrentPage] = useState('Sign up')
+  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [terms, setTerms] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [modal, setModal] = useState({
+    open: false,
+    message: '',
+    severity: 'success' as 'success' | 'error'
+  })
+
+  const handleCloseModal = () => {
+    setModal({ ...modal, open: false })
+  }
 
   const {
     register,
@@ -27,9 +43,30 @@ const Login = () => {
 
   const onSubmit = async (data: LoginFormInputs) => {
     try {
-      console.log(data)
+      setLoading(true)
+      if (currentPage === 'Sign up') {
+        await signUp(data.username, data.email, data.password)
+        setModal({
+          open: true,
+          message: 'Sign up successful',
+          severity: 'success'
+        })
+      } else if (currentPage === 'Login') {
+        await signIn(data.email, data.password)
+        setModal({
+          open: true,
+          message: 'Login successful',
+          severity: 'success'
+        })
+      }
     } catch (error) {
-      console.error(error)
+      setModal({
+        open: true,
+        message: error instanceof Error ? error.message.split('/')[1].split('-').join(' ').split(').').join('')   : 'An error occurred',
+        severity: 'error'
+      })
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -49,9 +86,11 @@ const Login = () => {
                 minLength: {
                   value: 6,
                   message: 'Username must be at least 6 characters'
-                }
+                },
+                onChange: (e) => setUsername(e.target.value)
               })}
               placeholder='Username'
+              value={username}
             />
             {errors.username && <span className="error-message">{errors.username.message}</span>}
           </>
@@ -65,9 +104,11 @@ const Login = () => {
             pattern: {
               value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
               message: 'Email invalid'
-            }
+            },
+            onChange: (e) => setEmail(e.target.value)
           })}
           placeholder='Email'
+          value={email}
         />
         {errors.email && <span className="error-message">{errors.email.message}</span>}
 
@@ -81,9 +122,11 @@ const Login = () => {
                 minLength: {
                   value: 6,
                   message: 'Password must be at least 6 characters'
-                }
+                },
+                onChange: (e) => setPassword(e.target.value)
               })}
               placeholder='Password'
+              value={password}
             />
             {errors.password && <span className="error-message">{errors.password.message}</span>}
           </>
@@ -97,6 +140,8 @@ const Login = () => {
                 {...register('terms', {
                   required: 'You must accept the terms and conditions'
                 })}
+                onChange={() => setTerms(!terms)}
+                checked={terms}
               />
               <p>Agree to the terms of use & privacy policy</p>
             </>
@@ -128,9 +173,18 @@ const Login = () => {
           )}
           {currentPage === 'Forgot password' && (
             <p className='login_toggle'> Back to <span onClick={() => setCurrentPage('Login')}>Login</span></p>
-              )}
+          )}
 
         </div>
+
+        <MessageModal
+          open={modal.open}
+          onClose={handleCloseModal}
+          message={modal.message}
+          severity={modal.severity}
+        />
+
+        <LoadingModal open={loading} />
       </form>
     </div>
   )
