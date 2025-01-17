@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import { Snackbar, Alert, CircularProgress } from '@mui/material'
+import { CircularProgress } from '@mui/material'
 import assets from '../../assets/assets'
 import './ProfileUpdate.scss'
 import { useForm } from 'react-hook-form'
+import LoadingModal from '../../components/Modals/LoadingModal'
+import MessageModal from '../../components/Modals/MessageModal'
 
 type FormValues = {
   name: string
@@ -19,27 +21,27 @@ const ProfileUpdate = () => {
 
   const [avatar, setAvatar] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
-  const [snackbar, setSnackbar] = useState({
+  const [modal, setModal] = useState({
     open: false,
     message: '',
     severity: 'success' as 'success' | 'error'
   })
 
-  const handleCloseSnackbar = () => {
-    setSnackbar({ ...snackbar, open: false })
+  const handleCloseModal = () => {
+    setModal({ ...modal, open: false })
   }
 
   const onSubmit = async (data: FormValues) => {
     try {
       setLoading(true)
       // Xử lý logic update
-      setSnackbar({
+      setModal({
         open: true,
         message: 'Profile updated successfully!',
         severity: 'success'
       })
     } catch (error) {
-      setSnackbar({
+      setModal({
         open: true,
         message: 'Failed to update profile',
         severity: 'error'
@@ -90,18 +92,14 @@ const ProfileUpdate = () => {
         <img className='profile-pic' src={avatar ? URL.createObjectURL(avatar) : assets.avatar_icon} alt="logo" />
       </div>
 
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert
-          severity={snackbar.severity}
-          onClose={handleCloseSnackbar}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+      <MessageModal
+        open={modal.open}
+        onClose={handleCloseModal}
+        message={modal.message}
+        severity={modal.severity}
+      />
+
+      <LoadingModal open={loading} />
     </div>
   )
 }

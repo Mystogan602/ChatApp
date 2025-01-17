@@ -8,12 +8,12 @@ import { getStorage } from "firebase/storage";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyC8ELPz71KLUAl8hhGCHH6jFagD6q-h6WA",
-  authDomain: "chatapp-7823d.firebaseapp.com",
-  projectId: "chatapp-7823d",
-  storageBucket: "chatapp-7823d.firebasestorage.app",
-  messagingSenderId: "437471147505",
-  appId: "1:437471147505:web:2b99859c5b06890a1e8050"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
 // Initialize Firebase
@@ -27,16 +27,16 @@ const signUp = async (username: string, email: string, password: string) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
-  await setDoc(doc(db, "users", user.uid), {
-    id: user.uid,
-    username: username.toLowerCase(),
-    email,
-    name: "",
-    avatar: "",
-    bio: "",
-    lastSeen: serverTimestamp(),
-  });
-  await setDoc(doc(db, "userChats", user.uid), {
+    await setDoc(doc(db, "users", user.uid), {
+      id: user.uid,
+      username: username.toLowerCase(),
+      email,
+      name: "",
+      avatar: "",
+      bio: "",
+      lastSeen: serverTimestamp(),
+    });
+    await setDoc(doc(db, "userChats", user.uid), {
       chats: [],
     });
   } catch (error) {
