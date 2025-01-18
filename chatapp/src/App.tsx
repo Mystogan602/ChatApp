@@ -23,6 +23,10 @@ const App = () => {
         if (loadUserData.fulfilled.match(userData)) {
           navigate(userData.payload.redirect);
         }
+        if ((window as any).__lastSeenInterval) {
+          clearInterval((window as any).__lastSeenInterval);
+          delete (window as any).__lastSeenInterval;
+        }
       } else {
         navigate('/')
       }

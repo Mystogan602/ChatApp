@@ -1,8 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { doc, getDoc } from 'firebase/firestore'
+import { doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from '../config/firebase'
-import { useNavigate } from 'react-router-dom'
 
 interface AppState {
     // Thêm các state cần thiết ở đây
@@ -21,6 +20,27 @@ export const loadUserData = createAsyncThunk(
     async (uid: string, { dispatch }) => {
         const userDoc = await getDoc(doc(db, "users", uid));
         const userData = userDoc.data();
+
+        // Cập nhật lastSeen ban đầu với serverTimestamp
+        await updateDoc(doc(db, "users", uid), {
+            lastSeen: serverTimestamp()
+        });
+
+        // Tạo interval và lưu reference để có thể cleanup
+        const intervalId = setInterval(async () => {
+            try {
+                await updateDoc(doc(db, "users", uid), {
+                    lastSeen: serverTimestamp()
+                });
+            } catch (error) {
+                console.error("Error updating lastSeen:", error);
+                // Nếu có lỗi, dừng interval
+                clearInterval(intervalId);
+            }
+        }, 1000 * 60); // Cập nhật mỗi phút
+        // Lưu intervalId vào window object để có thể cleanup khi cần
+        (window as any).__lastSeenInterval = intervalId;
+
         return { userData, redirect: userData?.avatar && userData?.name ? '/chat' : '/profile-update' };
     }
 );
