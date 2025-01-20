@@ -1,7 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore'
+import { doc, getDoc, updateDoc, serverTimestamp, onSnapshot } from 'firebase/firestore'
 import { db } from '../config/firebase'
+import { useEffect } from 'react'
+import { useAppDispatch } from '../hooks/redux'
 
 interface AppState {
     // Thêm các state cần thiết ở đây
@@ -62,6 +64,34 @@ export const appSlice = createSlice({
         });
     }
 });
+
+// Tạo custom hook để lắng nghe chat data
+export const useChatListener = (userData: any) => {
+    const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        if (userData) {
+            const chatRef = doc(db, 'chats', userData.id);
+            const unsubscribe = onSnapshot(chatRef, async (snapshot) => {
+                const chatData = snapshot.data()?.chatsData || {};
+                const temp = [];
+
+                for (const key in chatData) {
+                    const user = await getDoc(doc(db, 'users', chatData[key].uid));
+                    temp.push({
+                        id: key,
+                        ...chatData[key],
+                        user: user.data()
+                    });
+                }
+
+                dispatch(setChatData(temp.sort((a, b) => b.updatedAt - a.updatedAt)));
+            });
+
+            return () => unsubscribe();
+        }
+    }, [userData, dispatch]);
+};
 
 export const { setUserData, setChatData } = appSlice.actions
 export default appSlice.reducer 

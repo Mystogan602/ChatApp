@@ -11,6 +11,8 @@ import { getDoc, updateDoc } from 'firebase/firestore'
 import { doc } from 'firebase/firestore'
 import { useNavigate } from 'react-router-dom'
 import { uploadFile } from '../../lib/uploadFile'
+import { useAppDispatch } from '../../hooks/redux'
+import { loadUserData } from '../../store/appSlice'
 
 type FormValues = {
   name: string
@@ -32,6 +34,7 @@ const ProfileUpdate = () => {
   const [bio, setBio] = useState('')
   const [uid, setUid] = useState('')
   const [prevImage, setPrevImage] = useState('')
+  const dispatch = useAppDispatch()
 
   const [loading, setLoading] = useState(false)
   const [modal, setModal] = useState({
@@ -80,6 +83,10 @@ const ProfileUpdate = () => {
     if (newAvatarUrl) {
       setPrevImage(newAvatarUrl);
     }
+
+    const snapshot = await getDoc(doc(db, 'users', uid))
+    dispatch(loadUserData(snapshot.data()?.id))
+    navigate('/chat')
   };
 
   useEffect(() => {
@@ -173,7 +180,7 @@ const ProfileUpdate = () => {
             {loading ? <CircularProgress size={24} /> : 'Update'}
           </button>
         </form>
-        <img className='profile-pic' src={avatar ? URL.createObjectURL(avatar) : assets.avatar_icon} alt="logo" />
+        <img className='profile-pic' src={avatar ? URL.createObjectURL(avatar) : prevImage ? prevImage : assets.avatar_icon} alt="logo" />
       </div>
 
       <MessageModal
