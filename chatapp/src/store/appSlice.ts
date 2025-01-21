@@ -71,16 +71,15 @@ export const useChatListener = (userData: any) => {
 
     useEffect(() => {
         if (userData) {
-            const chatRef = doc(db, 'chats', userData.id);
+            const chatRef = doc(db, 'userChats', userData.id);
             const unsubscribe = onSnapshot(chatRef, async (snapshot) => {
-                const chatData = snapshot.data()?.chatsData || {};
+                const chatData = snapshot.data()?.chatsData || [];
                 const temp = [];
 
-                for (const key in chatData) {
-                    const user = await getDoc(doc(db, 'users', chatData[key].uid));
+                for (let chat of chatData) {
+                    const user = await getDoc(doc(db, 'users', chat.rId));
                     temp.push({
-                        id: key,
-                        ...chatData[key],
+                        ...chat,
                         user: user.data()
                     });
                 }
